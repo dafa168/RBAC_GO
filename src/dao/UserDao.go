@@ -4,13 +4,24 @@ import (
 	"RBAC_GO/configs"
 	"RBAC_GO/src/models"
 	"bytes"
-	"database/sql"
 	"fmt"
 )
 
-
+type UserDao interface {
+	QueryAll() (map[int64]models.User, error)
+	QueryLogin(user *models.User) (models.User,error)
+	UpdateUser(user *models.User) int64
+	QueryById(id int)(models.User,error)
+	DeleteUserById(id int) int64
+	DeleteUsers(users map[string]interface{}) int64
+	InsertUser(user *models.User) (int64, error)
+	PageQueryUserData(maps map[string]interface{})([]models.User,error)
+	PageQueryUserCount(maps map[string]interface{})(int64,error)
+}
+// sql采用工具里， 这里不需要在结构体中重新定义
+type userDao struct {}
 // 查询所有user 信息
-func QueryAll() (map[int64]models.User, error) {
+func (dao *userDao)QueryAll() (map[int64]models.User, error) {
 	users := make(map[int64]models.User, 0)
 	err := configs.Engine.Find(users)
 	if err != nil {
@@ -19,7 +30,7 @@ func QueryAll() (map[int64]models.User, error) {
 	return users, nil
 }
 // 用户名loginacct 和密码判断用户名可以登录
-func QueryLogin(user *models.User) (models.User,error) {
+func  (dao *userDao)QueryLogin(user *models.User) (models.User,error) {
 	//sqlStr := "select * from user where loginacct = ? and usepswd = ?"
 	resultUser := models.User{}
 	err := configs.Engine.Where("login_acct=", user.LoginAcct).Where("user_ps_wd=", user.Username).Find(resultUser)
@@ -30,7 +41,7 @@ func QueryLogin(user *models.User) (models.User,error) {
 	return resultUser,nil
 }
 // 更新用户信息
-func UpdateUser(user *models.User) int64 {
+func  (dao *userDao)UpdateUser(user *models.User) int64 {
 	//sqlStr := "update t_user set loginacct = ?,?,?,? where id = ?"
 	update, err := configs.Engine.ID(user.Id).Update(user)
 	if err != nil {
@@ -39,7 +50,7 @@ func UpdateUser(user *models.User) int64 {
 	return update
 }
 //根据id 查找用户user
-func QueryById(id int)(models.User,error){
+func  (dao *userDao)QueryById(id int)(models.User,error){
 	resultUser := models.User{}
 	err := configs.Engine.ID(id).Find(resultUser)
 	if err != nil{
@@ -48,7 +59,7 @@ func QueryById(id int)(models.User,error){
 	return resultUser,nil
 }
 // 通过user 的id 删除用户
-func DeleteUserById(id int) int64 {
+func  (dao *userDao)DeleteUserById(id int) int64 {
 
 	//sqlStr := "delete from t_user where id = ?"
 
@@ -59,16 +70,18 @@ func DeleteUserById(id int) int64 {
 	return results
 }
 // 批量删除用户
-func DeleteUsers(users map[string][]string) sql.Result {
+func (dao *userDao) DeleteUsers(users map[string]interface{}) int64 {
 
 	sqlstr := "delete from user where id in ("
 	//定义Buffer类型
 	var bt bytes.Buffer
 	//向bt中写入字符串
 	bt.WriteString(sqlstr)
-	for n,i:= range users["usersid"]{
+	usersIds := users["usersId"].([]int)
+	fmt.Println(usersIds)
+	for n,i:= range []string{"1","2"}{
 		bt.WriteString(i)
-		if n != len(users["usersid"])-1{
+		if n != len([]string{"1","2"})-1{
 			bt.WriteString(",")
 		}
 	}
@@ -80,10 +93,12 @@ func DeleteUsers(users map[string][]string) sql.Result {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return exec
+	affected, _ := exec.RowsAffected()
+
+	return affected
 }
 // 添加新用户
-func InsertUser(user *models.User) (int64, error) {
+func  (dao *userDao)InsertUser(user *models.User) (int64, error) {
 	//sqlstr = "insert into user login_acct ,username,user_ps_wd,email,create_time values (?,?,?,?,?)"
 	result, err := configs.Engine.InsertOne(user)
 	if err !=nil{
@@ -93,7 +108,7 @@ func InsertUser(user *models.User) (int64, error) {
 }
 
 // 分页查找user的数据
-func PageQueryUserData(maps map[string]interface{})([]models.User,error){
+func  (dao *userDao)PageQueryUserData(maps map[string]interface{})([]models.User,error){
 
 	users := make([]models.User, 0)
 	if _, ok := maps["queryText"]; ok {
@@ -133,7 +148,7 @@ func PageQueryUserData(maps map[string]interface{})([]models.User,error){
 }
 
 // 分页查找user 的count
-func PageQueryUserCount(maps map[string]interface{})(int64,error){
+func  (dao *userDao)PageQueryUserCount(maps map[string]interface{})(int64,error){
 	if _, ok := maps["queryText"]; ok {
 		sqlStr1 := "select count(*) from user  where name like concat('%', ?, '%')"
 

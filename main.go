@@ -9,7 +9,7 @@ package main
 
 import (
 	"RBAC_GO/configs"
-	"github.com/betacraft/yaag/irisyaag"
+	"RBAC_GO/web/controllers"
 	"github.com/betacraft/yaag/yaag"
 	"github.com/kataras/iris"
 )
@@ -29,10 +29,14 @@ func main() {
 	configs.MysqlEngine()
 
 	//注册中间件
-	app.Use(irisyaag.New())
+	//app.Use(irisyaag.New())
 	//加载模板文件
-	app.RegisterView(iris.HTML("./web/resources/views/", ".html"))
-	//注册控制器
+	app.RegisterView(iris.HTML("./web/views/", ".html"))
+	//加载静态资源
+	app.StaticWeb("/","./web/static/")
+	// 添加路由
+	app.PartyFunc("/", controllers.Index)
+
 
 	app.Run(
 		//开启web服务

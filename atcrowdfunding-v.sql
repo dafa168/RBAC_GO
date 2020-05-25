@@ -5,7 +5,7 @@
  Source Server Type    : MySQL
  Source Server Version : 80020
  Source Host           : 192.168.60.100:3306
- Source Schema         : atcrowdfunding-v
+ Source Schema         : atcrowdfunding-v1
 
  Target Server Type    : MySQL
  Target Server Version : 80020
