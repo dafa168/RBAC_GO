@@ -6,8 +6,18 @@ import (
 	"strconv"
 )
 
+type RoleDao interface {
+	PageQueryRoleData(maps map[string]string) ([]models.Role, error)
+	PageQueryRoleCount(maps map[string]string) (int64, error)
+	QueryAllRole() ([]models.Role, error)
+}
+type roleDao struct {}
+
+func NewRoleDao() *roleDao {
+	return &roleDao{}
+}
 // 分页查找Role数据
-func PageQueryRoleData(maps map[string]string) ([]models.Role, error) {
+func (r *roleDao)PageQueryRoleData(maps map[string]string) ([]models.Role, error) {
 	roles := make([]models.Role, 0)
 	if _, ok := maps["queryText"]; ok {
 		sqlStr1 := "select * from role  where name like concat('%', ?, '%')  limit ?, ?"
@@ -46,7 +56,7 @@ func PageQueryRoleData(maps map[string]string) ([]models.Role, error) {
 }
 
 // 查找role 的数量
-func PageQueryRoleCount(maps map[string]string) (int64, error) {
+func (r *roleDao)PageQueryRoleCount(maps map[string]string) (int64, error) {
 	if _, ok := maps["queryText"]; ok {
 		sqlStr1 := "select count(*) from role  where name like concat('%', ?, '%')"
 
@@ -67,7 +77,7 @@ func PageQueryRoleCount(maps map[string]string) (int64, error) {
 }
 
 // 查找所有数据
-func QueryAllRole() ([]models.Role, error) {
+func (r *roleDao)QueryAllRole() ([]models.Role, error) {
 	sqlStr := "select * from role"
 
 	roles := make([]models.Role, 0)

@@ -20,6 +20,10 @@ type UserDao interface {
 }
 // sql采用工具里， 这里不需要在结构体中重新定义
 type userDao struct {}
+
+func NewUserDao() *userDao {
+	return &userDao{}
+}
 // 查询所有user 信息
 func (dao *userDao)QueryAll() (map[int64]models.User, error) {
 	users := make(map[int64]models.User, 0)
@@ -29,11 +33,11 @@ func (dao *userDao)QueryAll() (map[int64]models.User, error) {
 	}
 	return users, nil
 }
-// 用户名loginacct 和密码判断用户名可以登录
+// 用户名login_acct 和密码判断用户名可以登录
 func  (dao *userDao)QueryLogin(user *models.User) (models.User,error) {
-	//sqlStr := "select * from user where loginacct = ? and usepswd = ?"
+	//sqlStr := "select * from user where login_acct = ? and user_ps_wd = ?"
 	resultUser := models.User{}
-	err := configs.Engine.Where("login_acct=", user.LoginAcct).Where("user_ps_wd=", user.Username).Find(resultUser)
+	err := configs.Engine.Where("login_acct=", user.LoginAcct).Where("user_ps_wd=", user.UserPsWd).Find(resultUser)
 	if err != nil{
 		fmt.Println("出现错误：",err)
 		return resultUser,err

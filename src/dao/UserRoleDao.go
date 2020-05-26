@@ -12,8 +12,12 @@ type UserRoleDao interface {
 	DeleteUserRoles(list []models.UserRole) error
 }
 // sql采用工具里， 这里不需要在结构体中重新定义
-type roleDao struct {}
-func (Dao *roleDao)QueryRoleIdsByUserId(id int) interface{} {
+type userRoleDao struct {}
+
+func NewUserRoleDao() *userRoleDao {
+	return &userRoleDao{}
+}
+func (Dao *userRoleDao)QueryRoleIdsByUserId(id int) interface{} {
 	sqlStr := "select role_id from user_role where user_id = ?"
 	results, err := configs.Engine.QueryInterface(sqlStr, id)
 	if err != nil {
@@ -23,7 +27,7 @@ func (Dao *roleDao)QueryRoleIdsByUserId(id int) interface{} {
 	return userId
 }
 // 向关系表，添加关联数据
-func (Dao *roleDao)InsertUserRoles(list []models.UserRole) error {
+func (Dao *userRoleDao)InsertUserRoles(list []models.UserRole) error {
 	sqlStr := "insert into user_role ( user_id, role_id ) values ("
 	var bt bytes.Buffer
 	//向bt中写入字符串
@@ -49,7 +53,7 @@ func (Dao *roleDao)InsertUserRoles(list []models.UserRole) error {
 
 }
 // 删除关系表数据
-func (Dao *roleDao)DeleteUserRolesV1(list []models.UserRole) error {
+func (Dao *userRoleDao)DeleteUserRolesV1(list []models.UserRole) error {
 	sqlStr := "delete from user_role where user_id = ? and role_id in ("
 	var bt bytes.Buffer
 	//向bt中写入字符串
@@ -64,7 +68,7 @@ func (Dao *roleDao)DeleteUserRolesV1(list []models.UserRole) error {
 }
 // 删除关系表数据 单用秃，user_id 是不变的，所以这里UserROle 结构体，里面
 // user_id 是一样的
-func (Dao *roleDao)DeleteUserRoles(list []models.UserRole) error{
+func (Dao *userRoleDao)DeleteUserRoles(list []models.UserRole) error{
 	sqlStr := "delete from user_role where user_id = ? and role_id in ("
 	var bt bytes.Buffer
 	//向bt中写入字符串

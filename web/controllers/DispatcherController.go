@@ -5,6 +5,8 @@ import (
 	"RBAC_GO/src/service"
 	"fmt"
 	"github.com/kataras/iris"
+	"github.com/kataras/iris/mvc"
+	"github.com/kataras/iris/sessions"
 )
 
 type DispatcherController struct {
@@ -15,36 +17,49 @@ type DispatcherController struct {
 	//和依赖于当前上下文的会话（动态绑定）。
 	Ctx iris.Context
 	//我们的UserService，它是一个接口
-
+	//从主应用程序绑定。
+	Service           service.UserService
+	// session
+	Session *sessions.Session
 }
 
-func Index(index iris.Party)  {
-	// user路由组
-	index.PartyFunc("/user",User)
+func (c *DispatcherController) BeforeActivation(b mvc.BeforeActivation) {
 
-	// Dispatcher 写的是/ 分组下的方法
-	index.Get( "/", indexPage)
-	index.Post("/doAJAXLogin",doAJAXLogin)
+	b.Handle("POST", "/doAJAXLogin", "DoAJAXLogin") // 验证登录，并且获取此登录用户的权限角色，权限
+	b.Handle("GET", "/login", "login")
+	b.Handle("GET", "/error", "error")
+	b.Handle("GET", "/logout", "logout") // 登出，进行重定向，删除session
+	b.Handle("GET", "/main", "main")
+	b.Handle("GET", "/doLogin", "doLogin")
 }
-// 返回登录界面
-func indexPage(ctx iris.Context) {
-	ctx.View("login.html")
-}
-// ajax 传递数据，验证登录
-func doAJAXLogin(ctx iris.Context) {
-	var (
-		user = ctx.FormValue("loginAcct")
-		password = ctx.FormValue("userPsWd")
 
-	)
-	fmt.Println(user,password)
+// 设置主页为登录界面
+func (c *DispatcherController) Get() error {
+	return c.Ctx.View("login.html")
+}
+
+// doAJAXLogin ajax登录验证
+func (d *DispatcherController) DoAJAXLogin() models.AJAXResult {
+	result := models.AJAXResult{}
+	var user = d.Ctx.FormValue("loginAcct")
+	var password = d.Ctx.FormValue("userPsWd")
 	users := models.User{
 		LoginAcct: user,
-		UserPsWd: password,
+		UserPsWd:  password,
 	}
-	service.UserService.QueryLogin(&users)
-	ctx.JSON(models.AJAXResult{
-		Success: true,
-	})
+	fmt.Println(users)
+
+	login, err := d.Service.QueryLogin(&users)
+	if err != nil {
+		result.Success = false
+		return result
+	} else {
+		// 验证成功，存储session，并且获取用户权限信息
+		fmt.Println(login)
+		if login != (models.User{}) {
+
+		}
+		return result
+	}
 
 }
