@@ -8,7 +8,7 @@ import (
 func QueryRootPermission()(models.Permission,error){
 	sqlStr := "select * from permission where pid is null"
 	permission := models.Permission{}
-	rows, err := configs.Engine.SQL(sqlStr).Rows(new(models.RolePermission))
+	rows, err := configs.Engine.SQL(sqlStr).Rows(new(models.Permission))
 	if err != nil{
 		return permission,err
 	}

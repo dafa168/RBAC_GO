@@ -1,1 +1,4 @@
-# GO_web 的RBAC 的demo
+# GO_web 的RBAC
+
+# 这个版本不采用iris的mvc模式，，下一个版本进行迭代更新
+#

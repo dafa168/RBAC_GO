@@ -4,9 +4,9 @@ import (
 	"RBAC_GO/src/models"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-xorm/xorm"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
-	"xorm.io/xorm"
 )
 
 var Engine *xorm.Engine
