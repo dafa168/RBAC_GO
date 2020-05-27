@@ -8,20 +8,32 @@
 package controllers
 
 import (
+	"RBAC_GO/src/dao"
+	"RBAC_GO/src/models"
+	"fmt"
 	"github.com/kataras/iris"
 )
 
-func Dispatcher(index iris.Party)  {
-	index.Get("/login",login)
+func DoAJAXLogin(ctx iris.Context) {
+	var (
+		loginAcct = ctx.FormValue("loginAcct")
+		password = ctx.FormValue("userPsWd")
+	)
+	loginers:= models.User{
+		LoginAcct: loginAcct,
+		UserPsWd: password,
+	}
+	login, err := dao.QueryLogin(&loginers)
+	if err != nil{
+		ctx.JSON(models.AJAXResult{
+			Success: false,
+			Msg: string(iris.StatusNonAuthoritativeInfo),
+		})
+	}
+	fmt.Println(login)
 }
 
-func login(ctx iris.Context){
-	ctx.View("login.html")
-}
-func error(ctx iris.Context){
-	ctx.View("error.html")
-}
-func logout(ctx iris.Context){
+func Logout(ctx iris.Context){
 
-	ctx.View("login.html")
+
 }

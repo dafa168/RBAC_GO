@@ -22,7 +22,7 @@ func MysqlEngine() {
 	}
 	Engine.ShowSQL(true)
 	Engine.Logger()
-	err = Engine.Sync2(new(models.User), new(models.Role), new(models.Permission), new(models.RolePermission), new(models.UserRole))
+	err = Engine.Sync2(new(models.User), new(models.Role), new(models.Permission), new(models.OauthToken))
 	if err != nil {
 		fmt.Printf("同步结构错误：%v", err)
 	}
