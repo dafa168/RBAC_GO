@@ -5,8 +5,8 @@ import (
 	"RBAC_GO/src/service"
 	"fmt"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/mvc"
 	"github.com/kataras/iris/sessions"
+	"github.com/kataras/iris/v12/mvc"
 )
 
 type DispatcherController struct {
@@ -22,10 +22,9 @@ type DispatcherController struct {
 	// session
 	Session *sessions.Session
 }
-
 func (c *DispatcherController) BeforeActivation(b mvc.BeforeActivation) {
 
-	b.Handle("POST", "/doAJAXLogin", "DoAJAXLogin") // 验证登录，并且获取此登录用户的权限角色，权限
+	b.Handle("POST", "/doAJAXLogin", "doAJAXLogin") // 验证登录，并且获取此登录用户的权限角色，权限
 	b.Handle("GET", "/login", "login")
 	b.Handle("GET", "/error", "error")
 	b.Handle("GET", "/logout", "logout") // 登出，进行重定向，删除session
@@ -33,13 +32,21 @@ func (c *DispatcherController) BeforeActivation(b mvc.BeforeActivation) {
 	b.Handle("GET", "/doLogin", "doLogin")
 }
 
+
 // 设置主页为登录界面
 func (c *DispatcherController) Get() error {
 	return c.Ctx.View("login.html")
 }
-
+// 设置错误界面
+func (c *DispatcherController) GetError() error {
+	return c.Ctx.View("error.html")
+}
+// 设置登录界面
+func (c *DispatcherController) GetLogin() error {
+	return c.Ctx.View("login.html")
+}
 // doAJAXLogin ajax登录验证
-func (d *DispatcherController) DoAJAXLogin() models.AJAXResult {
+func (d *DispatcherController) doAJAXLogin() models.AJAXResult {
 	result := models.AJAXResult{}
 	var user = d.Ctx.FormValue("loginAcct")
 	var password = d.Ctx.FormValue("userPsWd")
@@ -56,6 +63,7 @@ func (d *DispatcherController) DoAJAXLogin() models.AJAXResult {
 	} else {
 		// 验证成功，存储session，并且获取用户权限信息
 		fmt.Println(login)
+
 		if login != (models.User{}) {
 
 		}

@@ -6,17 +6,15 @@ import (
 )
 
 type UserService interface {
-	dao.UserRoleDao
 	dao.UserDao
 }
 
 type userService struct {
 	userDao     dao.UserDao
-	userRoleDao dao.UserRoleDao
 }
 
-func NewUserService(userDao dao.UserDao, userRoleDao dao.UserRoleDao) *userService {
-	return &userService{userDao: userDao, userRoleDao: userRoleDao}
+func NewUserService(userDao dao.UserDao) *userService {
+	return &userService{userDao: userDao}
 }
 
 func (service *userService) QueryAll() (map[int64]models.User, error) {
@@ -46,12 +44,4 @@ func (service *userService) PageQueryUserData(maps map[string]interface{}) ([]mo
 func (service *userService) PageQueryUserCount(maps map[string]interface{}) (int64, error) {
 	return service.userDao.PageQueryUserCount(maps)
 }
-func (service *userService) QueryRoleIdsByUserId(id int) interface{} {
-	return service.userRoleDao.QueryRoleIdsByUserId(id)
-}
-func (service *userService) InsertUserRoles(list []models.UserRole) error {
-	return service.userRoleDao.InsertUserRoles(list)
-}
-func (service *userService) DeleteUserRoles(list []models.UserRole) error {
-	return service.userRoleDao.DeleteUserRoles(list)
-}
+

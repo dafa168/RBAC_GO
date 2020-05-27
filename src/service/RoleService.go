@@ -6,17 +6,16 @@ import (
 )
 
 type RoleService interface {
-	dao.RolePermissionDao
+
 	dao.RoleDao
 }
 type roleService struct{
-	dao.RolePermissionDao
+
 	dao.RoleDao
 }
 
-func NewRoleService(rolePermissionDao dao.RolePermissionDao,
-	roleDao dao.RoleDao) *roleService {
-	return &roleService{RolePermissionDao: rolePermissionDao, RoleDao: roleDao}
+func NewRoleService(roleDao dao.RoleDao) *roleService {
+	return &roleService{RoleDao: roleDao}
 }
 func (r *roleService) PageQueryRoleData(maps map[string]string) ([]models.Role, error){
 	return r.RoleDao.PageQueryRoleData(maps)
@@ -27,7 +26,5 @@ func (r *roleService) PageQueryRoleCount(maps map[string]string) (int64, error){
 func (r *roleService) QueryAllRole() ([]models.Role, error){
 	return r.RoleDao.QueryAllRole()
 }
-func (r *roleService) InsertRolePermission(list []models.RolePermission) (int64, error)  {
-	return r.RolePermissionDao.InsertRolePermission(list)
-}
+
 
