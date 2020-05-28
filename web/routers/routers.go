@@ -4,11 +4,11 @@ import (
 	"RBAC_GO/src/dao"
 	"RBAC_GO/src/service"
 	"RBAC_GO/web/controllers"
+	"RBAC_GO/web/middleware"
 	"github.com/kataras/iris/mvc"
 )
-func TotalRouters(mvc *mvc.Application){
-	Dispatcher(mvc)
-}
+
+// /下的url控制器
 func Dispatcher(mvc *mvc.Application) {
 	//添加基本身份验证（admin：password）中间件
 	// 创建dao
@@ -22,5 +22,13 @@ func Dispatcher(mvc *mvc.Application) {
 	//为我们的电影控制器服务
 	//请注意，您可以为多个控制器提供服务
 	mvc.Handle(new(controllers.DispatcherController))
+	middleware.InitCasbin()
+	casbinMiddleware := middleware.New(middleware.Enforcer)               //casbin for gorm                                                   // <- IMPORTANT, register the middleware.
+	mvc.Router.Use(casbinMiddleware.ServeHTTP) //登录验证
 	mvc.Handle(new(controllers.UserController))
+
+}
+
+func BackDispatcher(mvc *mvc.Application){
+
 }

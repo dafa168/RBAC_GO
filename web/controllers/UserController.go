@@ -9,16 +9,8 @@ package controllers
 
 import (
 	"RBAC_GO/src/service"
-	"fmt"
 	"github.com/kataras/iris"
 )
-// 由结构体绑定接口，调用后面的service方法 父url 为/user
-func User(user iris.Party) {
-	user.Get("/deletes",deletes)
-	user.Get("/delete",delete)
-	user.Get("/update",update)
-
-}
 
 type UserController struct {
 	//每个请求都由Iris自动绑定上下文，
@@ -30,34 +22,4 @@ type UserController struct {
 	//我们的UserService，它是一个接口
 	//从主应用程序绑定。
 	Service service.UserService
-}
-
-// /deletes url，参数传送userIds 的列表
-func deletes(ctx iris.Context){
-	var (
-		data = ctx.ReadJSON("data")
-	)
-	fmt.Println(data)
-	//maps := make(map[string]interface{},0)
-	//maps["userIds"] = userIds
-	//result := service.DeleteUsers(maps)
-	//if result != 0{
-	//	// 表示删除成功
-	//}else {
-	//	// 没有删除数据
-	//}
-}
-// /delete
-func delete(ctx iris.Context)	{
-	//result := service.DeleteUserById(id)
-	//if result != 0{
-	//	// 表示删除成功
-	//}else {
-	//	// 没有删除数据
-	//}
-}
-// /update
-
-func update(ctx iris.Context){
-
 }

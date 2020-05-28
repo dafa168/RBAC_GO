@@ -9,6 +9,7 @@ require (
 	github.com/casbin/casbin v1.9.1
 	github.com/casbin/casbin/v2 v2.1.0
 	github.com/casbin/xorm-adapter v1.0.0
+	github.com/eknkc/amber v0.0.0-20171010120322-cdade1c07385
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/flosch/pongo2 v0.0.0-20200518135938-dfb43dbdc22a // indirect
 	github.com/gavv/monotime v0.0.0-20190418164738-30dba4353424 // indirect

@@ -32,8 +32,7 @@ func main() {
 	//加载静态网页路径
 	middleware.PathLoad(app)
 	// iris 的mvc
-	m := mvc.New(app)
-	m.Configure(routers.Dispatcher)
+	mvc.Configure(app.Party("/"),routers.Dispatcher)
 	app.Run(
 		//开启web服务
 		iris.Addr(":8080"),

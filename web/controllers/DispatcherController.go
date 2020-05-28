@@ -5,7 +5,6 @@ import (
 	"RBAC_GO/src/service"
 	"fmt"
 	"github.com/kataras/iris"
-	"github.com/kataras/iris/sessions"
 	"github.com/kataras/iris/v12/mvc"
 )
 
@@ -19,17 +18,14 @@ type DispatcherController struct {
 	//我们的UserService，它是一个接口
 	//从主应用程序绑定。
 	Service           service.UserService
-	// session
-	Session *sessions.Session
 }
 func (c *DispatcherController) BeforeActivation(b mvc.BeforeActivation) {
 
-	b.Handle("POST", "/doAJAXLogin", "doAJAXLogin") // 验证登录，并且获取此登录用户的权限角色，权限
-	b.Handle("GET", "/login", "login")
+
+	b.Handle("Post", "/login", "login")
 	b.Handle("GET", "/error", "error")
-	b.Handle("GET", "/logout", "logout") // 登出，进行重定向，删除session
 	b.Handle("GET", "/main", "main")
-	b.Handle("GET", "/doLogin", "doLogin")
+
 }
 
 
@@ -37,37 +33,32 @@ func (c *DispatcherController) BeforeActivation(b mvc.BeforeActivation) {
 func (c *DispatcherController) Get() error {
 	return c.Ctx.View("login.html")
 }
+// 设置主页为登录界面
+func (c *DispatcherController) PostLoginBy(loginAcct string, userPsWd string) models.AJAXResult {
+	loginer := models.User{
+		LoginAcct: loginAcct,
+		UserPsWd: userPsWd,
+	}
+	login, err := c.Service.QueryLogin(&loginer)
+	if err != nil {
+		return models.AJAXResult{
+			Success: false,
+		}
+	}
+	fmt.Println(login)
+	if login.Id != -1 {
+
+	}
+	return models.AJAXResult{
+		Success: true,
+	}
+}
 // 设置错误界面
 func (c *DispatcherController) GetError() error {
 	return c.Ctx.View("error.html")
 }
 // 设置登录界面
-func (c *DispatcherController) GetLogin() error {
+func (c *DispatcherController) login() error {
 	return c.Ctx.View("login.html")
 }
-// doAJAXLogin ajax登录验证
-func (d *DispatcherController) doAJAXLogin() models.AJAXResult {
-	result := models.AJAXResult{}
-	var user = d.Ctx.FormValue("loginAcct")
-	var password = d.Ctx.FormValue("userPsWd")
-	users := models.User{
-		LoginAcct: user,
-		UserPsWd:  password,
-	}
-	fmt.Println(users)
 
-	login, err := d.Service.QueryLogin(&users)
-	if err != nil {
-		result.Success = false
-		return result
-	} else {
-		// 验证成功，存储session，并且获取用户权限信息
-		fmt.Println(login)
-
-		if login != (models.User{}) {
-
-		}
-		return result
-	}
-
-}
