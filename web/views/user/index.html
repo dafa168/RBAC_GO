@@ -237,7 +237,7 @@
             	
             	$.ajax({
             		type : "POST",
-            		url  : "static/user/pageQuery",
+            		url  : "back/user/pageQuery",
             		data : jsonData,
             		beforeSend : function(){
             			loadingIndex = layer.msg('处理中', {icon: 16});
@@ -295,11 +295,11 @@
             }
             
             function goUpdatePage(id) {
-            	window.location.href = "static/user/edit?id="+id;
+            	window.location.href = "back/user/edit?id="+id;
             }
             
             function goAssignPage(id) {
-            	window.location.href = "static/user/assign?id="+id;
+            	window.location.href = "back/user/assign?id="+id;
             }
             
 

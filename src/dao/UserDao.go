@@ -4,7 +4,6 @@ import (
 	"RBAC_GO/configs"
 	"RBAC_GO/src/models"
 	"bytes"
-	"database/sql"
 	"fmt"
 )
 
@@ -65,7 +64,7 @@ func DeleteUserById(id int) int64 {
 }
 
 // 批量删除用户
-func DeleteUsers(users map[string][]string) sql.Result {
+func DeleteUsers(users map[string][]string) int64 {
 
 	sqlstr := "delete from user where id in ("
 	//定义Buffer类型
@@ -86,7 +85,8 @@ func DeleteUsers(users map[string][]string) sql.Result {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return exec
+	affected, _ := exec.RowsAffected()
+	return affected
 }
 
 // 添加新用户

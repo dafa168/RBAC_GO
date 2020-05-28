@@ -25,7 +25,8 @@ func InitCasbin() *casbin.Enforcer {
 	//act  "read"  // 用户对资源执行的操作.
 	//engine := xormadapter.NewAdapterByEngine(configs.Engine)
 
-	Enforcer, _ := casbin.NewEnforcer("rbac_model.conf", "rbac_policy.csv")
+	Enforcer, _ := casbin.NewEnforcer("./rbac_model.conf", "./rbac_policy.csv")
+	//Enforcer ,_ := casbin.NewEnforcer("E:\\GO\\RBAC_GO\\rbac_model.conf","E:\\GO\\RBAC_GO\\rbac_policy.csv")
 	_ = Enforcer.LoadPolicy()
 	return Enforcer
 }
