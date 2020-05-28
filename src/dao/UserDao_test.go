@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"RBAC_GO/configs"
 	"RBAC_GO/src/models"
 	"fmt"
 	"testing"
@@ -8,7 +9,15 @@ import (
 )
 
 
+func TestMain(m *testing.M) {
+	fmt.Println("write setup code here...") // 测试之前的做一些设置
+	// 如果 TestMain 使用了 flags，这里应该加上flag.Parse()
+	configs.MysqlEngine()
+	m.Run()
+	// 执行测试
+	fmt.Println("write teardown code here...") // 测试之后做一些拆卸工作
 
+}
 
 func TestQueryAll(t *testing.T) {
 	results, _ := QueryAll()
@@ -55,4 +64,13 @@ func TestInsertUser(t *testing.T) {
 		fmt.Println("cuwou :",err)
 	}
 	fmt.Println(insertUser)
+}
+
+func TestQueryLogin(t *testing.T) {
+	user  := models.User{
+		LoginAcct:  "root",
+		UserPsWd:   "admin",
+	}
+	login, _ := QueryLogin(&user)
+	fmt.Println(login)
 }

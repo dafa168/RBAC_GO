@@ -89,7 +89,7 @@
         var loadingIndex = null;
         $.ajax({
         	type : "POST",
-        	url  : "doAJAXLogin",
+        	url  : "back/doAJAXLogin",
         	data : {
         		"loginAcct" : loginacct,
         		"userPsWd"  : userpswd
@@ -100,7 +100,7 @@
         	success : function(result) {
         		layer.close(loadingIndex);
         		if (result.success) {
-        			window.location.href = "main";
+        			window.location.href = "back/main";
         		} else {
                     layer.msg("用户登录账号或密码不正确，请重新输入", {time:2000, icon:5, shift:6}, function(){
                     	

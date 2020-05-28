@@ -10,8 +10,8 @@ package routers
 import (
 	"RBAC_GO/web/controllers"
 	"RBAC_GO/web/middleware"
-	//"github.com/iris-contrib/middleware/jwt"
-	"github.com/kataras/iris"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/core/router"
 )
 // 路由方法
 var mySecret = []byte("HS2JDFKhu7Y1av7b")
@@ -25,15 +25,20 @@ func Routers(api *iris.Application){
 
 		back := app.Party("/back")
 		{
-
-
+			back.HandleDir("/", "./web/static")
 			back.Post("/doAJAXLogin",controllers.DoAJAXLogin).Name = "登录"
 			//back.Use(irisyaag.New())
-			middleware.InitCasbin()
-			casbinMiddleware := middleware.New(middleware.Enforcer)               //casbin for xorm                                                   // <- IMPORTANT, register the middleware.
-			app.Use(middleware.JWTMiddleware().Serve,casbinMiddleware.ServeHTTP) //登录验证
+			casbin := middleware.InitCasbin()
+			casbinMiddleware := middleware.New(casbin)               //casbin for xorm
+			back.Use(middleware.JWTMiddleware().Serve,casbinMiddleware.ServeHTTP) //登录验证
 			back.Get("/logout",controllers.Logout).Name = "退出"
-			back.PartyFunc("/user",controllers.UserControllers)
+			back.Get("/main",controllers.Main).Name = "back 主页"
+			back.PartyFunc("/user", func(p router.Party) {
+				//后台之 user管理
+				p.Post("/deletes",controllers.Deletes).Name = "user deletes"
+				p.Post("/delete",controllers.Delete).Name = "user delete"
+
+			})
 		}
 	}
 }

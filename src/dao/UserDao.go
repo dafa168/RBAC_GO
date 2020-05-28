@@ -8,7 +8,6 @@ import (
 	"fmt"
 )
 
-
 // 查询所有user 信息
 func QueryAll() (map[int64]models.User, error) {
 	users := make(map[int64]models.User, 0)
@@ -18,17 +17,21 @@ func QueryAll() (map[int64]models.User, error) {
 	}
 	return users, nil
 }
+
 // 用户名loginacct 和密码判断用户名可以登录
-func QueryLogin(user *models.User) (models.User,error) {
+func QueryLogin(user *models.User) (models.User, error) {
 	//sqlStr := "select * from user where loginacct = ? and usepswd = ?"
 	resultUser := models.User{}
-	err := configs.Engine.Where("login_acct=", user.LoginAcct).Where("user_ps_wd=", user.Username).Find(resultUser)
-	if err != nil{
-		fmt.Println("出现错误：",err)
-		return resultUser,err
+	_, err := configs.Engine.Table("user").Where("login_acct = ? and user_ps_wd = ?",user.LoginAcct,user.UserPsWd).Get(&resultUser)
+
+	if err != nil {
+		fmt.Println("出现错误：", err)
+		return resultUser, err
 	}
-	return resultUser,nil
+
+	return resultUser, nil
 }
+
 // 更新用户信息
 func UpdateUser(user *models.User) int64 {
 	//sqlStr := "update t_user set loginacct = ?,?,?,? where id = ?"
@@ -38,15 +41,17 @@ func UpdateUser(user *models.User) int64 {
 	}
 	return update
 }
+
 //根据id 查找用户user
-func QueryById(id int)(models.User,error){
+func QueryById(id int) (models.User, error) {
 	resultUser := models.User{}
 	err := configs.Engine.ID(id).Find(resultUser)
-	if err != nil{
+	if err != nil {
 		return models.User{}, err
 	}
-	return resultUser,nil
+	return resultUser, nil
 }
+
 // 通过user 的id 删除用户
 func DeleteUserById(id int) int64 {
 
@@ -58,6 +63,7 @@ func DeleteUserById(id int) int64 {
 	}
 	return results
 }
+
 // 批量删除用户
 func DeleteUsers(users map[string][]string) sql.Result {
 
@@ -66,9 +72,9 @@ func DeleteUsers(users map[string][]string) sql.Result {
 	var bt bytes.Buffer
 	//向bt中写入字符串
 	bt.WriteString(sqlstr)
-	for n,i:= range users["usersid"]{
+	for n, i := range users["usersid"] {
 		bt.WriteString(i)
-		if n != len(users["usersid"])-1{
+		if n != len(users["usersid"])-1 {
 			bt.WriteString(",")
 		}
 	}
@@ -82,18 +88,19 @@ func DeleteUsers(users map[string][]string) sql.Result {
 	}
 	return exec
 }
+
 // 添加新用户
 func InsertUser(user *models.User) (int64, error) {
 	//sqlstr = "insert into user login_acct ,username,user_ps_wd,email,create_time values (?,?,?,?,?)"
 	result, err := configs.Engine.InsertOne(user)
-	if err !=nil{
+	if err != nil {
 		return -1, err
 	}
-	return result,nil
+	return result, nil
 }
 
 // 分页查找user的数据
-func PageQueryUserData(maps map[string]interface{})([]models.User,error){
+func PageQueryUserData(maps map[string]interface{}) ([]models.User, error) {
 
 	users := make([]models.User, 0)
 	if _, ok := maps["queryText"]; ok {
@@ -101,7 +108,7 @@ func PageQueryUserData(maps map[string]interface{})([]models.User,error){
 
 		start := maps["start"].(int64)
 		size := maps["size"].(int64)
-		rows, err := configs.Engine.SQL(sqlStr1,maps["queryText"].(string), start, size).Rows(new(models.Role))
+		rows, err := configs.Engine.SQL(sqlStr1, maps["queryText"].(string), start, size).Rows(new(models.Role))
 		if err != nil {
 			return nil, err
 		}
@@ -133,7 +140,7 @@ func PageQueryUserData(maps map[string]interface{})([]models.User,error){
 }
 
 // 分页查找user 的count
-func PageQueryUserCount(maps map[string]interface{})(int64,error){
+func PageQueryUserCount(maps map[string]interface{}) (int64, error) {
 	if _, ok := maps["queryText"]; ok {
 		sqlStr1 := "select count(*) from user  where name like concat('%', ?, '%')"
 

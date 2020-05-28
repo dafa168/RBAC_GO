@@ -314,7 +314,7 @@
         				// 删除选择的用户信息
         				$.ajax({
         					type : "POST",
-        					url  : "static/user/deletes",
+        					url  : "back/user/deletes",
         					data : $("#userForm").serialize(),
         					success : function(result) {
         						if ( result.success ) {
@@ -340,7 +340,7 @@
     				// 删除用户信息
     				$.ajax({
     					type : "POST",
-    					url  : "static/user/delete",
+    					url  : "back/user/delete",
     					data : { id : id },
     					success : function(result) {
     						if ( result.success ) {

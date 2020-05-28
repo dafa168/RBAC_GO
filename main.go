@@ -11,8 +11,8 @@ import (
 	"RBAC_GO/configs"
 	"RBAC_GO/web/routers"
 	"github.com/betacraft/yaag/yaag"
-	"github.com/kataras/iris"
-	"github.com/kataras/iris/middleware/logger"
+	"github.com/kataras/iris/v12"
+	"github.com/kataras/iris/v12/middleware/logger"
 )
 
 func main() {
@@ -51,13 +51,13 @@ func main() {
 	//加载模板文件
 	app.RegisterView(iris.HTML("./web/views/", ".html"))
 	//加载静态资源
-	app.StaticWeb("/", "./web/static/")
+	app.HandleDir("/", "./web/static")
 	// 添加路由
 	routers.Routers(app)
 
 	app.Run(
 		//开启web服务
-		iris.Addr(":8080"),
+		iris.Addr("localhost:8080"),
 		//实现更快的json序列化和更多优化
 		iris.WithOptimizations,
 		iris.WithCharset("utf-8"),

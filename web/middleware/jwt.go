@@ -8,7 +8,6 @@
 package middleware
 
 import (
-	//"github.com/iris-contrib/middleware/jwt"
 	"github.com/dgrijalva/jwt-go"
 	jwtmiddleware "github.com/iris-contrib/middleware/jwt"
 )

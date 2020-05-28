@@ -7,9 +7,11 @@
 */
 package controllers
 
-import "github.com/kataras/iris"
+import "github.com/kataras/iris/v12"
 
-func UserControllers(users iris.Party)  {
-	
+func Deletes(ctx iris.Context)  {
+	ctx.FormValue("")
 }
-
+func Delete(ctx iris.Context)  {
+	ctx.FormValue("")
+}

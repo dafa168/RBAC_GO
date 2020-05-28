@@ -8,38 +8,35 @@
 package middleware
 
 import (
-	"RBAC_GO/configs"
-	"RBAC_GO/src/models"
+	"RBAC_GO/src/dao"
 	"github.com/casbin/casbin/v2"
-	"github.com/casbin/xorm-adapter"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/kataras/iris"
+	"github.com/iris-contrib/middleware/jwt"
+	"github.com/kataras/iris/v12/context"
 	"net/http"
 	"strconv"
 	"time"
 )
 
-var Enforcer *casbin.Enforcer
 
-func InitCasbin() {
+
+func InitCasbin() *casbin.Enforcer {
 	//sub   "alice"// 想要访问资源的用户.
 	//obj  "data1" // 要访问的资源.
 	//act  "read"  // 用户对资源执行的操作.
-	engine := xormadapter.NewAdapterByEngine(configs.Engine)
+	//engine := xormadapter.NewAdapterByEngine(configs.Engine)
 
-	Enforcer, _ := casbin.NewEnforcer("rbac_model.conf", engine)
-
+	Enforcer, _ := casbin.NewEnforcer("rbac_model.conf", "rbac_policy.csv")
 	_ = Enforcer.LoadPolicy()
-
+	return Enforcer
 }
 
 func New(e *casbin.Enforcer) *Casbin {
 	return &Casbin{enforcer: e}
 }
 // 判断token
-func (c *Casbin) ServeHTTP(ctx iris.Context) {
+func (c *Casbin) ServeHTTP(ctx context.Context) {
 	value := ctx.Values().Get("jwt").(*jwt.Token)
-	token := models.OauthToken{}
+	token := dao.OauthToken{}
 	token.GetOauthTokenByToken(value.Raw) //获取 access_token 信息
 	if token.Revoked || token.ExpressIn < time.Now().Unix() {
 		//_, _ = ctx.Writef("token 失效，请重新登录") // 输出到前端
