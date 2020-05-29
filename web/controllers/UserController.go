@@ -10,15 +10,20 @@ package controllers
 import (
 	"RBAC_GO/src/dao"
 	"RBAC_GO/src/models"
+	"encoding/json"
+	"fmt"
 	"github.com/kataras/iris/v12"
 	"strconv"
 )
 // 批量删除users
 func Deletes(ctx iris.Context)  {
 	userId := ctx.FormValue("userid")
-	maps := make(map[string]string,0)
-	maps["userids"] = userId
-
+	var a []int
+	// 将字符串反解析为数组
+	json.Unmarshal([]byte(userId), &a)
+	maps := make(map[string][]int,0)
+	maps["userids"] =a
+	fmt.Println(a)
 	rows := dao.DeleteUsers(maps)
 	if rows >0 {
 		ctx.JSON(models.AJAXResult{
@@ -33,8 +38,8 @@ func Deletes(ctx iris.Context)  {
 // 通过id 删除单个user
 func Delete(ctx iris.Context)  {
 	id := ctx.FormValue("id")
-
-	rows := dao.DeleteUserById(id)
+	atoi, _ := strconv.Atoi(id)
+	rows := dao.DeleteUserById(atoi)
 	if rows >0 {
 		ctx.JSON(models.AJAXResult{
 			Success: true,
@@ -47,21 +52,48 @@ func Delete(ctx iris.Context)  {
 }
 // 更新user 信息
 func Update(ctx iris.Context)  {
-	user := models.User{}
-	_, _ = ctx.JSON(&user)
+	var (
+		loginAcct = ctx.FormValue("loginAcct")
+		userName = ctx.FormValue("userName")
+		email = ctx.FormValue("email")
+		id = ctx.FormValue("id")
+	)
+	atoi, _ := strconv.Atoi(id)
+	user := models.User{
+		LoginAcct: loginAcct,
+		Username: userName,
+		Email: email,
+		Id: atoi,
+	}
 	updateUser := dao.UpdateUser(&user)
 	if updateUser >0 {
 		ctx.JSON(models.AJAXResult{
 			Success: true,
+			Msg: "更新user 信息成功",
 		})
 	}else {
 		ctx.JSON(models.AJAXResult{
 			Success: false,
+			Msg: "更新user 信息失败",
 		})
 	}
 }
+// 根据userid 编辑用户信息
 func Edit(ctx iris.Context)  {
-	ctx.FormValue("")
+	userid := ctx.FormValue("userid")
+	atoi, _ := strconv.Atoi(userid)
+	user, err := dao.QueryById(atoi)
+	if err != nil {
+		ctx.JSON(models.AJAXResult{
+			Success: false,
+		})
+		return
+	}
+	ctx.JSON(models.AJAXResult{
+		Data: user,
+		Success: true,
+	})
+
 }
 func Assign(ctx iris.Context)  {
 	ctx.FormValue("")
@@ -124,7 +156,7 @@ func PageQuery(ctx iris.Context){
 		Totalno: totalno,
 		TotalSize: pagesize1,
 	}
-	userPage.SetDatas(data)
+	userPage.SetDatas("data",data)
 	ctx.JSON(models.AJAXResult{
 		Data: userPage,
 		Success: true,

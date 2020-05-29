@@ -37,7 +37,7 @@ func Routers(api *iris.Application){
 				p.Post("/deletes",controllers.Deletes).Name = "user deletes"
 				p.Post("/delete",controllers.Delete).Name = "user delete"
 				p.Post("/update",controllers.Update).Name = "user update"
-				p.Put("/edit",controllers.Edit).Name = "user edit"
+				p.Get("/edit",controllers.Edit).Name = "user edit"
 				p.Post("/assign",controllers.Assign).Name = ""
 				p.Post("/doAssign",controllers.DoAssign).Name = ""
 				p.Post("/dounAssign",controllers.DounAssign).Name = ""

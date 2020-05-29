@@ -45,15 +45,6 @@ func  (ot *OauthToken)GetOauthTokenByToken(token string) {
 		ot.Revoked = true
 	}
 
-	//fmt.Println(get[0]["token"])
-	//fmt.Println(get[0]["express_in"])
-	//fmt.Println(get[0]["secret"])
-	//fmt.Println(get[0]["revoked"])
-	//fmt.Println(get[0]["user_id"])
-
-	//fmt.Println(get)
-	//fmt.Println(ot)
-
 }
 
 //通过 user_id 更新 oauth_token 记录

@@ -8,12 +8,12 @@
 package models
 
 type Page struct {
-	Datas []interface{}
+	Datas map[string]interface{}
 	Pageno int64
 	Totalno int64
 	TotalSize int64
 }
 
-func (p *Page)SetDatas(data []interface{}){
-	p.Datas = data
+func (p *Page)SetDatas(name string ,data interface{}) {
+	p.Datas[name] = data
 }

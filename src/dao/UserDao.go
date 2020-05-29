@@ -5,6 +5,7 @@ import (
 	"RBAC_GO/src/models"
 	"bytes"
 	"fmt"
+	"strconv"
 )
 
 // 查询所有user 信息
@@ -64,24 +65,25 @@ func DeleteUserById(id int) int64 {
 }
 
 // 批量删除用户
-func DeleteUsers(users map[string][]string) int64 {
+func DeleteUsers(users map[string][]int) int64 {
 
 	sqlstr := "delete from user where id in ("
 	//定义Buffer类型
 	var bt bytes.Buffer
 	//向bt中写入字符串
 	bt.WriteString(sqlstr)
-	for n, i := range users["usersid"] {
-		bt.WriteString(i)
-		if n != len(users["usersid"])-1 {
+	length := len(users["userids"])-1
+	for n, i := range users["userids"] {
+		itoa := strconv.Itoa(i)
+		bt.WriteString(itoa)
+		if n != length {
 			bt.WriteString(",")
 		}
 	}
 	bt.WriteString(")")
 	//获得拼接后的字符串
 	sql1 := bt.String()
-	fmt.Println(sql1)
-	exec, err := configs.Engine.Exec(sqlstr)
+	exec, err := configs.Engine.Exec(sql1)
 	if err != nil {
 		fmt.Println(err)
 	}

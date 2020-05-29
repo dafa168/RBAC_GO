@@ -41,8 +41,8 @@ func TestUpdateUser(t *testing.T) {
 }
 
 func TestDeleteUsers(t *testing.T) {
-	users := make(map[string][]string,0)
-	users["usersid"] = []string{"1","2"}
+	users := make(map[string][]int,0)
+	users["userids"] = []int{1,2}
 	deleteUsers := DeleteUsers(users)
 	fmt.Println(deleteUsers)
 }
