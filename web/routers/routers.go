@@ -27,9 +27,9 @@ func Routers(api *iris.Application){
 			back.HandleDir("/", "./web/static")
 			back.Post("/doAJAXLogin",controllers.DoAJAXLogin).Name = "登录"
 			//back.Use(irisyaag.New())
-			//casbin := middleware.InitCasbin()
-			//casbinMiddleware := middleware.New(casbin)               //casbin for xorm
-			//back.Use(middleware.JWTMiddleware().Serve,casbinMiddleware.ServeHTTP) //登录验证
+			casbin := middleware.InitCasbin()
+			casbinMiddleware := middleware.New(casbin)               //casbin for xorm
+			back.Use(middleware.JWTMiddleware().Serve,casbinMiddleware.ServeHTTP) //登录验证
 			back.Get("/logout",controllers.Logout).Name = "退出"
 			back.Get("/main",controllers.Main).Name = "back 主页"
 			back.PartyFunc("/user", func(p router.Party) {
@@ -38,7 +38,7 @@ func Routers(api *iris.Application){
 				p.Post("/delete",controllers.Delete).Name = "user delete"
 				p.Post("/update",controllers.Update).Name = "user update"
 				p.Get("/edit",controllers.Edit).Name = "user edit"
-				p.Post("/assign",controllers.Assign).Name = ""
+				p.Get("/assign",controllers.Assign).Name = ""
 				p.Post("/doAssign",controllers.DoAssign).Name = ""
 				p.Post("/dounAssign",controllers.DounAssign).Name = ""
 				p.Post("/insert",controllers.Insert).Name = ""

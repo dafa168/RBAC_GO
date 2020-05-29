@@ -80,7 +80,8 @@ func Update(ctx iris.Context)  {
 }
 // 根据userid 编辑用户信息
 func Edit(ctx iris.Context)  {
-	userid := ctx.FormValue("userid")
+	//userid := ctx.FormValue("userid")
+	userid := ctx.URLParam("id")
 	atoi, _ := strconv.Atoi(userid)
 	user, err := dao.QueryById(atoi)
 	if err != nil {
@@ -95,8 +96,11 @@ func Edit(ctx iris.Context)  {
 	})
 
 }
+
+// 获取用户的角色信息
 func Assign(ctx iris.Context)  {
-	ctx.FormValue("")
+	userid := ctx.URLParam("id")
+	fmt.Println(userid)
 }
 func DoAssign(ctx iris.Context)  {
 	ctx.FormValue("")

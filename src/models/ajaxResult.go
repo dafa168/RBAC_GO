@@ -12,3 +12,7 @@ type AJAXResult struct {
 	Msg     string      `json:"msg"`
 	Data    interface{} `json:"data"`
 }
+type Json struct {
+	Name string      `json:"name"`
+	Data interface{} `json:"data"`
+}

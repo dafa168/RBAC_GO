@@ -21,7 +21,7 @@ func MysqlEngine() {
 		fmt.Printf("错误信息：%e", err)
 	}
 	Engine.ShowSQL(true)
-	Engine.Logger()
+	//Engine.Logger()
 	err = Engine.Sync2(new(models.User), new(models.Role), new(models.Permission), new(models.OauthToken))
 	if err != nil {
 		fmt.Printf("同步结构错误：%v", err)
