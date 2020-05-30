@@ -8,9 +8,11 @@
 package middleware
 
 import (
+	"RBAC_GO/configs"
 	"RBAC_GO/src/dao"
 	"github.com/casbin/casbin/v2"
-	xormadapter "github.com/casbin/xorm-adapter"
+	xormadapter "github.com/casbin/xorm-adapter/v2"
+	//xormadapter "github.com/casbin/xorm-adapter"
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12/context"
 	"net/http"
@@ -18,27 +20,16 @@ import (
 	"time"
 )
 
-
-
 func InitCasbin() *casbin.Enforcer {
 	//sub   "alice"// 想要访问资源的用户.
 	//obj  "data1" // 要访问的资源.
 	//act  "read"  // 用户对资源执行的操作.
 	//adapter := xormadapter.NewAdapterByEngine(configs.Engine) // Your driver and data source.
 
-	// Or you can use an existing DB "abc" like this:
-	// The adapter will use the table named "casbin_rule".
-	// If it doesn't exist, the adapter will create it automatically.
-	a := xormadapter.NewAdapter("mysql", "root:root@(192.168.20.235:3306)/")
-	// Load the policy from DB.
-
+	a, _ := xormadapter.NewAdapterByEngine(configs.Engine)
 	e, _ := casbin.NewEnforcer("./rbac_model.conf", a)
-	e.LoadPolicy()
-
-
+	_ = e.LoadPolicy()
 	// Check the permission.
-	e.Enforce("alice", "data1", "read")
-
 	// Modify the policy.
 	// e.AddPolicy(...)
 	// e.RemovePolicy(...)
@@ -52,6 +43,7 @@ func InitCasbin() *casbin.Enforcer {
 func New(e *casbin.Enforcer) *Casbin {
 	return &Casbin{enforcer: e}
 }
+
 // 判断token
 func (c *Casbin) ServeHTTP(ctx context.Context) {
 	value := ctx.Values().Get("jwt").(*jwt.Token)

@@ -4,11 +4,12 @@ import (
 	"RBAC_GO/src/models"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
 	"github.com/joho/godotenv"
 	_ "github.com/joho/godotenv/autoload"
+	"xorm.io/xorm"
 )
 
+//Engine
 var Engine *xorm.Engine
 
 func MysqlEngine() {
@@ -22,7 +23,7 @@ func MysqlEngine() {
 	}
 	Engine.ShowSQL(true)
 	//Engine.Logger()
-	err = Engine.Sync2(new(models.User), new(models.Role), new(models.Permission), new(models.OauthToken))
+	err = Engine.Sync2(new(models.User), new(models.Role), new(models.Permission), new(models.OauthToken),new(models.CasbinRule))
 	if err != nil {
 		fmt.Printf("同步结构错误：%v", err)
 	}
