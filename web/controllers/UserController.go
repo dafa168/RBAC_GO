@@ -100,6 +100,7 @@ func Edit(ctx iris.Context)  {
 // 获取用户的角色信息
 func Assign(ctx iris.Context)  {
 	userid := ctx.URLParam("id")
+
 	fmt.Println(userid)
 }
 func DoAssign(ctx iris.Context)  {

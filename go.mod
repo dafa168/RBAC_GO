@@ -6,14 +6,11 @@ require (
 	github.com/CloudyKit/fastprinter v0.0.0-20200109182630-33d98a066a53 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/betacraft/yaag v1.0.0
-	github.com/casbin/casbin v1.9.1 // indirect
 	github.com/casbin/casbin/v2 v2.6.5
-	github.com/casbin/xorm-adapter v1.0.0
 	github.com/casbin/xorm-adapter/v2 v2.0.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/go-xorm/xorm v0.7.9
 	github.com/iris-contrib/middleware/cors v0.0.0-20191219204441-78279b78a367
 	github.com/iris-contrib/middleware/jwt v0.0.0-20191219204441-78279b78a367
 	github.com/joho/godotenv v1.3.0
