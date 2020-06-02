@@ -4,34 +4,17 @@ import (
 	"RBAC_GO/configs"
 	"RBAC_GO/src/models"
 )
-// 查询root 权限
-func QueryRootPermission()(models.Permission,error){
-	sqlStr := "select * from permission where pid is null"
-	permission := models.Permission{}
-	rows, err := configs.Engine.SQL(sqlStr).Rows(new(models.Permission))
-	if err != nil{
-		return permission,err
-	}
-	defer  rows.Close()
-	for rows.Next(){
-
-		err = rows.Scan(&permission)
-
-	}
-	return permission,nil
-}
-
 // 查询选择的权限
-func QueryChildPermissions(pid int) ([]models.Permission,error) {
+func QueryChildPermissions(pid int) ([]models.CasbinRule,error) {
 	sqlStr := "select * from permission where pid = ?"
-	permissions  := make([]models.Permission,0)
-	rows, err := configs.Engine.SQL(sqlStr,pid).Rows(new(models.Permission))
+	permissions  := make([]models.CasbinRule,0)
+	rows, err := configs.Engine.SQL(sqlStr,pid).Rows(new(models.CasbinRule))
 	if err != nil{
 		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next(){
-		permission := models.Permission{}
+		permission := models.CasbinRule{}
 		rows.Scan(&permission)
 		permissions = append(permissions,permission)
 	}
@@ -39,16 +22,16 @@ func QueryChildPermissions(pid int) ([]models.Permission,error) {
 }
 
 // 查询所有权限
-func QueryAllPermission()([]models.Permission,error){
-	sqlStr := "select * from permission "
-	permissions  := make([]models.Permission,0)
-	rows, err := configs.Engine.SQL(sqlStr).Rows(new(models.Permission))
+func QueryAllPermission()([]models.CasbinRule,error){
+	sqlStr := "select * from casbin_rule where p_type = 'p'"
+	permissions  := make([]models.CasbinRule,0)
+	rows, err := configs.Engine.SQL(sqlStr).Rows(new(models.CasbinRule))
 	if err != nil{
 		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next(){
-		permission := models.Permission{}
+		permission := models.CasbinRule{}
 		rows.Scan(&permission)
 		permissions = append(permissions,permission)
 	}
@@ -56,9 +39,9 @@ func QueryAllPermission()([]models.Permission,error){
 }
 
 // 插入权限
-func InsertPermission(permission models.Permission)(int64,error){
-	sqlStr := "insert into t_permission (name, url, pid) values (?,?,?)"
-	exec, err := configs.Engine.Exec(sqlStr, permission.Name, permission.Url, permission.Pid)
+func InsertPermission(permission models.CasbinRule)(int64,error){
+	sqlStr := "insert into casbin_rule (p_type, v0, v1,v2) values (p,?,?,?)"
+	exec, err := configs.Engine.Exec(sqlStr,permission.V0,permission.V1,permission.V2)
 	if err != nil{
 		return -1 ,err
 	}
@@ -66,27 +49,28 @@ func InsertPermission(permission models.Permission)(int64,error){
 	return rowsAffected,nil
 }
 
-//根据id查找权限
-func QueryPermissionById(id int)(models.Permission,error){
-	sqlStr := "select * from t_permission where id =  ?"
-	permission  := models.Permission{}
-	rows, err := configs.Engine.SQL(sqlStr,id).Rows(new(models.Permission))
+//查找角色下管理的权限
+func QueryPermissionByRole(role string)([]models.CasbinRule,error){
+	sqlStr := "select * from casbin_rule where p_type = 'p' and v0 = ?"
+	rows, err := configs.Engine.SQL(sqlStr,role).Rows(new(models.CasbinRule))
 	if err != nil{
-		return permission, err
+		return nil, err
 	}
 	defer rows.Close()
+	permissions := make([]models.CasbinRule,0)
 	for rows.Next(){
-		permission := models.Permission{}
+		permission := models.CasbinRule{}
 		rows.Scan(&permission)
+		permissions = append(permissions, permission)
 
 	}
-	return permission,nil
+	return permissions,nil
 }
 
 // 更新权限
-func UpdatePermission(permission models.Permission)(int64,error){
-	sqlStr :=  "update permission set name = ?, url = ?  where id = ?"
-	exec, err := configs.Engine.Exec(sqlStr, permission.Name, permission.Url, permission.Id)
+func UpdatePermission(permission models.CasbinRule)(int64,error){
+	sqlStr :=  "update casbin_rule set v1 = ?,v2 = ?  where p_type= ? AND v0 = ?"
+	exec, err := configs.Engine.Exec(sqlStr, permission.V1,permission.V2,permission.PType,permission.V0)
 	if err != nil {
 		return -1,err
 	}
@@ -95,10 +79,10 @@ func UpdatePermission(permission models.Permission)(int64,error){
 }
 
 //删除权限
-func DeletePermission(permission models.Permission)(int64,error){
+func DeletePermission(permission models.CasbinRule)(int64,error){
 
-	sqlStr := "delete from permission where id = ?"
-	exec, err := configs.Engine.Exec(sqlStr, permission.Id)
+	sqlStr := "delete from casbin_rule where p_type = 'p' and v0 = ? and  v1= ? and v2 = ?"
+	exec, err := configs.Engine.Exec(sqlStr, permission.PType,permission.V0,permission.V1,permission.V2)
 	if err != nil {
 		return -1,err
 	}

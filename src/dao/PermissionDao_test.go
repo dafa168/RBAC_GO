@@ -23,7 +23,3 @@ func TestQueryChildPermissions(t *testing.T) {
 	fmt.Println(permissions)
 }
 
-func TestQueryRootPermission(t *testing.T) {
-	rootPermission, _ := QueryRootPermission()
-	fmt.Println(rootPermission)
-}
