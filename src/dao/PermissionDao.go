@@ -4,6 +4,7 @@ import (
 	"RBAC_GO/configs"
 	"RBAC_GO/src/models"
 )
+
 // 查询选择的权限
 func QueryChildPermissions(pid int) ([]models.CasbinRule,error) {
 	sqlStr := "select * from permission where pid = ?"
@@ -20,6 +21,7 @@ func QueryChildPermissions(pid int) ([]models.CasbinRule,error) {
 	}
 	return permissions,nil
 }
+
 
 // 查询所有权限
 func QueryAllPermission()([]models.CasbinRule,error){
@@ -38,6 +40,10 @@ func QueryAllPermission()([]models.CasbinRule,error){
 	return permissions,nil
 }
 
+// 根据角色查找权限
+func QueryRolePermission(){
+
+}
 // 插入权限
 func InsertPermission(permission models.CasbinRule)(int64,error){
 	sqlStr := "insert into casbin_rule (p_type, v0, v1,v2) values (p,?,?,?)"
@@ -48,6 +54,7 @@ func InsertPermission(permission models.CasbinRule)(int64,error){
 	rowsAffected, _ := exec.RowsAffected()
 	return rowsAffected,nil
 }
+
 
 //查找角色下管理的权限
 func QueryPermissionByRole(role string)([]models.CasbinRule,error){
@@ -66,6 +73,8 @@ func QueryPermissionByRole(role string)([]models.CasbinRule,error){
 	}
 	return permissions,nil
 }
+
+
 
 // 更新权限
 func UpdatePermission(permission models.CasbinRule)(int64,error){

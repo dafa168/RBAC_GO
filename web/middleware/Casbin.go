@@ -21,10 +21,6 @@ import (
 )
 
 func InitCasbin() *casbin.Enforcer {
-	//sub   "alice"// 想要访问资源的用户.
-	//obj  "data1" // 要访问的资源.
-	//act  "read"  // 用户对资源执行的操作.
-	//adapter := xormadapter.NewAdapterByEngine(configs.Engine) // Your driver and data source.
 
 	a, _ := xormadapter.NewAdapterByEngine(configs.Engine)
 	e, _ := casbin.NewEnforcer("./rbac_model.conf", a)
@@ -50,7 +46,6 @@ func (c *Casbin) ServeHTTP(ctx context.Context) {
 	token := dao.OauthToken{}
 	token.GetOauthTokenByToken(value.Raw) //获取 access_token 信息
 	if token.Revoked || token.ExpressIn < time.Now().Unix() {
-		//_, _ = ctx.Writef("token 失效，请重新登录") // 输出到前端
 		ctx.StatusCode(http.StatusUnauthorized)
 		ctx.StopExecution()
 		return
